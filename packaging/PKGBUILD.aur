@@ -16,28 +16,30 @@ optdepends=(
 )
 options=(!lto)
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('SKIP')
-
-_root="$srcdir/$pkgname-$pkgver"
+sha256sums=('a043ca94863d0fc89ad0e0cf2ceb050518219c9b00bf6736752f381378eea05c')
 
 prepare() {
+  local _root="$srcdir/$pkgname-$pkgver"
   cd "$_root"
   cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
 }
 
 build() {
+  local _root="$srcdir/$pkgname-$pkgver"
   cd "$_root"
   export CARGO_TARGET_DIR="$srcdir/target"
   cargo build --release --frozen --workspace
 }
 
 check() {
+  local _root="$srcdir/$pkgname-$pkgver"
   cd "$_root"
   export CARGO_TARGET_DIR="$srcdir/target"
   cargo test --release --frozen --workspace
 }
 
 package() {
+  local _root="$srcdir/$pkgname-$pkgver"
   install -Dm755 "$srcdir/target/release/holdkeyd" "$pkgdir/usr/bin/holdkeyd"
   install -Dm755 "$srcdir/target/release/holdkey" "$pkgdir/usr/bin/holdkey"
   install -Dm644 "$_root/packaging/holdkeyd.service" "$pkgdir/usr/lib/systemd/user/holdkeyd.service"
