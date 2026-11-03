@@ -1,0 +1,24 @@
+[workspace]
+resolver = "3"
+members = ["crates/holdkey-core", "crates/holdkeyd", "crates/holdkey-cli"]
+
+[workspace.package]
+edition = "2024"
+version = "0.1.0"
+license = "MIT"
+
+[workspace.dependencies]
+tokio = { version = "=1.54.1", features = ["rt-multi-thread", "macros", "sync", "net", "io-util", "time", "signal", "fs"] }
+zbus = { version = "=6.2.1", default-features = false, features = ["tokio", "service", "proxy"] }
+ashpd = { version = "=0.13.13", default-features = false, features = ["tokio", "global_shortcuts"] }
+kbd = "=0.2.1"
+kbd-global = "=0.2.1"
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = "1"
+toml = "=1.1.8"
+tracing = "=0.1.44"
+tracing-journald = "=0.3.2"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+thiserror = "=2.0.21"
+clap = { version = "=4.6.7", features = ["derive"] }
+holdkey-core = { path = "crates/holdkey-core" }

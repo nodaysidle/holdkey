@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=holdkey
+Comment=Global press/release shortcut broker
+Exec=/usr/bin/holdkeyd
+NoDisplay=true

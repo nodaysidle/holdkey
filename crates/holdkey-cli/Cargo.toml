@@ -1,0 +1,16 @@
+[package]
+name = "holdkey-cli"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+holdkey-core.workspace = true
+clap.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+zbus.workspace = true
+
+[[bin]]
+name = "holdkey"
+path = "src/main.rs"
