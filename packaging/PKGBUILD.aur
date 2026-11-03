@@ -1,0 +1,47 @@
+# Maintainer: nodaysidle
+# AUR variant: builds the tagged GitHub release. Checksum is filled in by packaging/release.sh.
+pkgname=holdkey
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Per-user broker for global press/release shortcuts on Wayland (portal, Hyprland, evdev)'
+arch=(x86_64)
+url='https://github.com/nodaysidle/holdkey'
+license=(MIT)
+depends=(gcc-libs glibc)
+makedepends=(cargo)
+optdepends=(
+  'xdg-desktop-portal: GlobalShortcuts portal backend'
+  'xdg-desktop-portal-hyprland: GlobalShortcuts on Hyprland'
+  'wdotool: text injection (holdkey does not inject)'
+)
+options=(!lto)
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+_root="$srcdir/$pkgname-$pkgver"
+
+prepare() {
+  cd "$_root"
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+}
+
+build() {
+  cd "$_root"
+  export CARGO_TARGET_DIR="$srcdir/target"
+  cargo build --release --frozen --workspace
+}
+
+check() {
+  cd "$_root"
+  export CARGO_TARGET_DIR="$srcdir/target"
+  cargo test --release --frozen --workspace
+}
+
+package() {
+  install -Dm755 "$srcdir/target/release/holdkeyd" "$pkgdir/usr/bin/holdkeyd"
+  install -Dm755 "$srcdir/target/release/holdkey" "$pkgdir/usr/bin/holdkey"
+  install -Dm644 "$_root/packaging/holdkeyd.service" "$pkgdir/usr/lib/systemd/user/holdkeyd.service"
+  install -Dm644 "$_root/packaging/dev.holdkey.Broker.desktop" "$pkgdir/usr/share/applications/dev.holdkey.Broker.desktop"
+  install -Dm644 "$_root/packaging/holdkey.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/holdkey.svg"
+  install -Dm644 "$_root/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

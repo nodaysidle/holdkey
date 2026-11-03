@@ -3,4 +3,5 @@ Type=Application
 Name=holdkey
 Comment=Global press/release shortcut broker
 Exec=/usr/bin/holdkeyd
+Icon=holdkey
 NoDisplay=true

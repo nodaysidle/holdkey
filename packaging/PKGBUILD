@@ -39,4 +39,6 @@ package() {
   install -Dm755 "$srcdir/target/release/holdkey" "$pkgdir/usr/bin/holdkey"
   install -Dm644 "$_root/packaging/holdkeyd.service" "$pkgdir/usr/lib/systemd/user/holdkeyd.service"
   install -Dm644 "$_root/packaging/dev.holdkey.Broker.desktop" "$pkgdir/usr/share/applications/dev.holdkey.Broker.desktop"
+  install -Dm644 "$_root/packaging/holdkey.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/holdkey.svg"
+  install -Dm644 "$_root/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }

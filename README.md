@@ -13,8 +13,15 @@ Wayland stops apps from seeing keys pressed while another window has focus. Dict
 - `holdkey doctor` says which backend works and how to fix the others; snapshot-tested for GNOME 46/48, KDE 6, Hyprland, niri.
 - `holdkey watch | bind | status`, PKGBUILD and systemd user unit (package builds).
 
-## Not yet verified
-KDE Plasma 6 and GNOME 48+ portal runs; evdev on GNOME 46 / niri; clean-VM `makepkg -si`. CI is green.
+## Tested on
+| Desktop | Portal backend | evdev backend |
+|---|---|---|
+| Hyprland 0.56.2 (Arch) | works (hold = press, release on key-up) | works (incl. USB replug) |
+| KDE Plasma 6, GNOME 48+ | untested | untested |
+| GNOME 46/47, niri | n/a (no portal) | untested |
+
+CI (build + 17 tests) is green; the package installs and runs in a clean Arch container.
+If you try another desktop, please open an issue with the output of `holdkey doctor`.
 See `HANDOFF.md` for the per-task table.
 
 ## Goals
