@@ -15,7 +15,7 @@ Built from `SPEC.md` §5 (verdict PIVOT). Workspace: `holdkey-core`, `holdkeyd`,
 | 6 | **verified on Hyprland (evdev forced via HOLDKEYD_BACKEND=evdev); not on GNOME 46/niri** | Live: hold1 pressed->released 4.64 s, USB keyboard unplugged/replugged, hold2 6.1 s, both clean, no duplicates, no restart. Earlier notes: `evdev.rs` via kbd-global. **Replug test not run** (needs a physical keyboard; `/dev/uinput` is root-only). Release is detected by 5 ms polling of kbd-global key state (kbd-global only reports presses) |
 | 7 | verified | `busctl --user call ... Register` OK; `Pressed` seen in `busctl --user monitor` |
 | 8 | verified | snapshot tests: GNOME 46, GNOME 48, KDE 6, Hyprland, niri |
-| 9 | **partly** | `makepkg` built the package (its `check()` ran the tests); contents inspected; packaged `holdkey doctor` ran. **`makepkg -si` on a clean VM not done** |
+| 9 | verified (container) | Clean `archlinux` Docker container: `makepkg -si --noconfirm` built (check() ran tests) and installed `/usr/bin/holdkey{,d}`, the user unit and the desktop file; `holdkey --version` and `holdkey doctor` ran and reported. Not a full VM (no systemd boot), so enabling the unit was not tested |
 
 ## Things to know
 - The portal needs an app ID with a matching `.desktop` file. holdkeyd registers as `dev.holdkey.Broker` for all client apps; the PKGBUILD ships `dev.holdkey.Broker.desktop`. Without it: "App info not found".
