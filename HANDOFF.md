@@ -32,3 +32,28 @@ Built from `SPEC.md` §5 (verdict PIVOT). Workspace: `holdkey-core`, `holdkeyd`,
 
 ## Leftovers
 - `dev.holdkey.Broker:ptt` stays listed in `hyprctl globalshortcuts` after holdkeyd is killed (xdph keeps the session; holdkeyd doesn't close sessions on SIGTERM). Clears on `systemctl --user restart xdg-desktop-portal-hyprland`, which also drops other apps' shortcuts until they re-register - your call.
+
+## State as of 2026-11-03 (end of session)
+- Released: v0.1.0, public repo https://github.com/nodaysidle/holdkey, CI green, task 9 verified in a clean Arch container.
+- Verified: Hyprland 0.56.2 (portal and evdev holds, USB replug). Untested: KDE Plasma 6, GNOME 46/48+, niri; held Alt+Space (task 5).
+- Blocked on: AUR account registration is temporarily closed (HTTP 503 notice, 2026-11-03). Announcement list: aur-general. Do not script retries. Users install from source (see README).
+- Waiting for: the AUR to reopen, and any volunteer with KDE/GNOME for `holdkey doctor` + an F12 hold test.
+
+## AUR submission, fish shell (do this once registration reopens)
+1. Register at https://aur.archlinux.org/register, then in "My Account" paste your SSH public key:
+```fish
+test -f ~/.ssh/id_ed25519; or ssh-keygen -t ed25519 -C "nodaysidle@tutanota.de"
+cat ~/.ssh/id_ed25519.pub
+```
+2. Check the package name is free, then submit v0.1.0:
+```fish
+curl -s "https://aur.archlinux.org/rpc/v5/info?arg[]=holdkey" | jq '.resultcount'   # 0 = free
+git clone ssh://aur@aur.archlinux.org/holdkey.git ~/dev/nodaysidle/aur-holdkey
+cd ~/dev/nodaysidle/aur-holdkey
+cp ~/dev/nodaysidle/holdkey/packaging/PKGBUILD.aur PKGBUILD
+makepkg --printsrcinfo > .SRCINFO
+git add PKGBUILD .SRCINFO
+git commit -m "holdkey 0.1.0"
+git push
+```
+3. Later releases: `~/dev/nodaysidle/holdkey/packaging/release.sh 0.2.0` (needs `set -x NDS_ALLOW_PUSH 1` for your push hook), copy the new `PKGBUILD.aur` to the AUR clone, regenerate `.SRCINFO`, commit, push.
