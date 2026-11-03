@@ -32,6 +32,15 @@ See `HANDOFF.md` for the per-task table.
 
 Text injection is out of scope; use wdotool.
 
+## Install (Arch)
+The AUR package is pending. Until then, build from source:
+```
+git clone https://github.com/nodaysidle/holdkey && cd holdkey/packaging
+makepkg -si
+systemctl --user enable --now holdkeyd
+```
+Make sure your user is in the `input` group if you want the evdev backend (`holdkey doctor` tells you).
+
 ## Hyprland setup
 Add one plain bind (no `release = true` bind, it double-fires Released):
 `bind = ALT, F12, global, dev.holdkey.Broker:ptt`
