@@ -14,7 +14,7 @@ Wayland stops apps from seeing keys pressed while another window has focus. Dict
 - `holdkey watch | bind | status`, PKGBUILD and systemd user unit (package builds).
 
 ## Not yet verified
-KDE Plasma 6 and GNOME 48+ portal runs; evdev on GNOME 46 / niri; clean-VM `makepkg -si`; CI.
+KDE Plasma 6 and GNOME 48+ portal runs; evdev on GNOME 46 / niri; clean-VM `makepkg -si`. CI is green.
 See `HANDOFF.md` for the per-task table.
 
 ## Goals

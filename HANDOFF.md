@@ -7,7 +7,7 @@ Built from `SPEC.md` §5 (verdict PIVOT). Workspace: `holdkey-core`, `holdkeyd`,
 
 | # | Status | Evidence / gap |
 |---|---|---|
-| 1 | build OK, CI **unverified** | `cargo build --workspace` passes; `.github/workflows/ci.yml` written, no remote so never ran |
+| 1 | verified | `cargo build --workspace` passes; GitHub Actions CI green on first push (run 41727978563, ubuntu, build + 17 tests) |
 | 2 | verified (HoldTracker only) | `tests/replay.rs`: mock + Hex #485/#638 replays. Neither live backend uses HoldTracker (portal uses Deactivated, evdev uses 5 ms polling), so this is not coverage of them. Release logic is holdkey's own thin layer on `kbd` (kbd only matches presses) |
 | 3 | **verified on Hyprland/xdph; not KDE/GNOME 48+** | Live hold: one `pressed`, one `released` ~5.9 s later (epoch us). Needs ONE plain `bind = ..., global, dev.holdkey.Broker:ptt` in hyprland (a second `release = true` bind double-fires Released). xdph timestamps are seconds that ashpd reads as ms, so the daemon stamps events on arrival. An earlier note here claiming failure was a misread of that timestamp. |
 | 4 | verified (stub) | `tests/approvals.rs`. Two-phase bind: previously approved shortcuts re-bound first, cancel of new ones can't unbind them. obs-rust #2636 text was not read; behavior inferred from the spec line |
