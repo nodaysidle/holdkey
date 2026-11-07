@@ -157,7 +157,8 @@ impl ShortcutBackend for PortalBackend {
 async fn run(actions: Vec<Action>, store: Store, tx: UnboundedSender<ShortcutEvent>) -> Result<()> {
     let be = |e: ashpd::Error| Error::Backend(e.to_string());
     // A private connection per app: the host registry ties one app ID to one D-Bus connection.
-    let conn = async { ashpd::zbus::connection::Builder::session()?.build().await }
+    let conn = ashpd::zbus::connection::Builder::session()
+        .build()
         .await
         .map_err(|e| Error::Backend(e.to_string()))?;
     let id = ashpd::AppID::try_from(PORTAL_APP_ID).map_err(|e| Error::Backend(e.to_string()))?;

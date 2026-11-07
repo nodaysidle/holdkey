@@ -11,6 +11,8 @@ Wayland stops apps from seeing keys pressed while another window has focus. Dict
 - evdev fallback (kbd-global): live hold test OK, survives unplugging and replugging a USB keyboard.
 - Portal approvals are kept when a re-prompt is cancelled (stub-portal test).
 - `holdkey doctor` says which backend works and how to fix the others; snapshot-tested for GNOME 46/48, KDE 6, Hyprland, niri.
+- `holdkey doctor --ptt [trigger]` validates PTT capability (exits 0 if capable, 3 if no path exists).
+- Key-shape acceptance matrix documented in [`docs/KEY_SHAPES.md`](docs/KEY_SHAPES.md).
 - `holdkey watch | bind | status`, PKGBUILD and systemd user unit (package builds).
 
 ## Tested on

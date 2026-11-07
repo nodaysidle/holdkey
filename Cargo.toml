@@ -10,7 +10,7 @@ license = "MIT"
 [workspace.dependencies]
 tokio = { version = "=1.54.1", features = ["rt-multi-thread", "macros", "sync", "net", "io-util", "time", "signal", "fs"] }
 zbus = { version = "=6.2.1", default-features = false, features = ["tokio", "service", "proxy"] }
-ashpd = { version = "=0.13.13", default-features = false, features = ["tokio", "global_shortcuts"] }
+ashpd = { version = "=0.14.0", default-features = false, features = ["tokio", "global_shortcuts"] }
 kbd = "=0.2.1"
 kbd-global = "=0.2.1"
 serde = { version = "=1.0.229", features = ["derive"] }

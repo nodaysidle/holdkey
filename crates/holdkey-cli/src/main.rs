@@ -27,6 +27,10 @@ enum Cmd {
         /// Action ids to check for drift on Hyprland (repeatable).
         #[arg(long = "action")]
         actions: Vec<String>,
+        /// Test PTT hold/release capability for a trigger (e.g. `space`, `Right Alt`).
+        /// Exits 0 if capable, 3 if no path exists.
+        #[arg(long, num_args = 0..=1, default_missing_value = "space")]
+        ptt: Option<String>,
     },
     /// Print Pressed/Released events as JSON lines.
     Watch,
@@ -58,13 +62,22 @@ type Res<T> = Result<T, Box<dyn std::error::Error>>;
 
 async fn run(cmd: Cmd) -> Res<ExitCode> {
     match cmd {
-        Cmd::Doctor { app_id, actions } => {
-            let rows = diagnose_here(&app_id, &actions).await;
+        Cmd::Doctor { app_id, actions, ptt } => {
+            let env = make_env_here(&app_id, &actions, ptt.clone()).await;
+            let rows = doctor::diagnose(&env);
             print!("{}", doctor::render(&rows));
-            // Fail when nothing can deliver shortcuts, or a Hyprland binding has drifted.
-            let delivers = |name: &str| rows.iter().any(|(n, c)| n == name && c.works);
-            let drifted = rows.iter().any(|(n, _)| n == "drift");
-            Ok(if drifted || !(delivers("portal") || delivers("evdev")) { ExitCode::FAILURE } else { ExitCode::SUCCESS })
+            if let Some(ref trig) = ptt {
+                if doctor::ptt_capable(&env, trig) {
+                    Ok(ExitCode::SUCCESS)
+                } else {
+                    Ok(ExitCode::from(3u8))
+                }
+            } else {
+                // Fail when nothing can deliver shortcuts, or a Hyprland binding has drifted.
+                let delivers = |name: &str| rows.iter().any(|(n, c)| n == name && c.works);
+                let drifted = rows.iter().any(|(n, _)| n == "drift");
+                Ok(if drifted || !(delivers("portal") || delivers("evdev")) { ExitCode::FAILURE } else { ExitCode::SUCCESS })
+            }
         }
         Cmd::Watch => {
             let path = std::path::Path::new(&std::env::var("XDG_RUNTIME_DIR")?).join("holdkey.sock");
@@ -107,7 +120,7 @@ async fn broker() -> Res<zbus::Proxy<'static>> {
 }
 
 /// Probe this machine and run the pure diagnosis.
-async fn diagnose_here(app_id: &str, action_ids: &[String]) -> Vec<(String, Capability)> {
+async fn make_env_here(app_id: &str, action_ids: &[String], ptt_trigger: Option<String>) -> Environment {
     let desktop = std::env::var("XDG_CURRENT_DESKTOP").unwrap_or_default();
     let portal_global_shortcuts = async {
         let conn = Connection::session().await.ok()?;
@@ -124,15 +137,15 @@ async fn diagnose_here(app_id: &str, action_ids: &[String]) -> Vec<(String, Capa
         .as_ref()
         .map(|l| hyprland::check_drift(l, app_id, &actions).iter().map(|d| d.describe(app_id)).collect())
         .unwrap_or_default();
-    let env = Environment {
+    Environment {
         gnome_shell_major: gnome_shell_major(&desktop),
         desktop,
         portal_global_shortcuts,
         input_readable: holdkey_core::input_readable(),
         hyprland_ipc: listed.is_ok(),
         drift,
-    };
-    doctor::diagnose(&env)
+        ptt_trigger,
+    }
 }
 
 fn gnome_shell_major(desktop: &str) -> Option<u32> {
