@@ -46,3 +46,12 @@ Make sure your user is in the `input` group if you want the evdev backend (`hold
 ## Hyprland setup
 Add one plain bind (no `release = true` bind, it double-fires Released):
 `bind = ALT, F12, global, dev.holdkey.Broker:ptt`
+
+## Showcase: Headless Cross-Desktop Voice for AI Agents (Herdr + Claude Code)
+
+Because `holdkey` captures global hold and release without requiring window focus, you can dispatch voice instructions to AI coding agents across virtual desktops.
+
+For example, browse documentation on Desktop 1, **hold F10**, say *"Audit this repo for security vulnerabilities"*, and **release F10**. The prompt is automatically injected into your Claude Code terminal pane in [Herdr](https://herdr.dev) on Desktop 2 without moving focus, changing windows, or interrupting your active work.
+
+See the complete working integration script in [`examples/herdr-claude-ptt.sh`](examples/herdr-claude-ptt.sh).
+
