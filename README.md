@@ -47,6 +47,28 @@ Make sure your user is in the `input` group if you want the evdev backend (`hold
 Add one plain bind (no `release = true` bind, it double-fires Released):
 `bind = ALT, F12, global, dev.holdkey.Broker:ptt`
 
+## Showcase: System-Wide PipeWire Push-to-Talk (Discord / Meetings / OBS)
+
+`holdkey` cleanly drives PipeWire hardware microphone muting for system-wide push-to-talk without needing separate audio daemons:
+
+```bash
+# Listen to holdkey D-Bus events and toggle PipeWire source mute:
+holdkey watch | while IFS= read -r event; do
+  action=$(echo "$event" | jq -r '.action // empty')
+  type=$(echo "$event" | jq -r '.event // empty')
+
+  if [ "$action" = "ptt" ]; then
+    if [ "$type" = "pressed" ]; then
+      wpctl set-mute @DEFAULT_AUDIO_SOURCE@ 0  # Unmute mic on press
+    elif [ "$type" = "released" ]; then
+      wpctl set-mute @DEFAULT_AUDIO_SOURCE@ 1  # Mute mic on release
+    fi
+  fi
+done
+```
+
+This guarantees zero-leak, hardware-level push-to-talk across Discord, Google Meet, Zoom, OBS, and web browsers on Wayland.
+
 ## Showcase: Headless Cross-Desktop Voice for AI Agents (Herdr + Claude Code)
 
 Because `holdkey` captures global hold and release without requiring window focus, you can dispatch voice instructions to AI coding agents across virtual desktops.
